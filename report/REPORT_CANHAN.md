@@ -135,7 +135,7 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_tr
 (.venv) PS D:\K4-Day07-Data-Foundations-2A202601492-GiapHoangThinh> 
 ```
 
-**Số lượng bài test vượt qua (pass):** __ / 42
+**Số lượng bài test vượt qua (pass):** 48 / 48
 
 ---
 
@@ -171,7 +171,7 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 **Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 5 / 5
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
+> Qua kết quả của Nhân, tôi nhận ra SemanticChunker có thể cải thiện Hit@1 nhờ phát hiện điểm chuyển chủ đề, nhưng phải đánh đổi bằng 583 chunks và chi phí embedding ngay trong bước chunking. So sánh này cũng cho thấy HeadingChunker của tôi là phương án cân bằng hơn: chỉ tạo 162 chunks nhưng vẫn đạt Hit@3 5/5; để cải thiện tiếp, tôi có thể bổ sung metadata `section_topic` hoặc reranking nhằm xử lý các tài liệu có nội dung chồng chéo.
 
 ---
 
@@ -179,9 +179,11 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 
 | Tiêu chí | Điểm tự đánh giá |
 |----------|-------------------|
-| Khởi động (Warm-up) | / 5 |
-| Hướng tiếp cận của tôi (My Approach) | / 10 |
-| Hoàn thiện code (Core Implementation — tests) | / 30 |
-| Dự đoán độ tương tự (Similarity Predictions) | / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | / 10 |
-| **Tổng phần cá nhân** | **/ 60** |
+| Khởi động (Warm-up) | 5 / 5 |
+| Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
+| Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
+| Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
+| Kết quả truy xuất của tôi (Competition Results) | 8 / 10 |
+| **Tổng phần cá nhân** | **58 / 60** |
+
+**Cơ sở tự đánh giá:** Tôi đã hoàn thành đầy đủ phần khởi động, giải thích cách triển khai các thành phần chính, dự đoán và phản ngẫm về độ tương tự; toàn bộ 48 bài kiểm thử hiện có đều vượt qua. Phần truy xuất đạt Hit@3 5/5 và HeadingChunker tạo index nhỏ nhất nhóm (162 chunks), nhưng Q1–Q2 còn thiếu chi tiết, Q3–Q4 chưa đưa đúng tài liệu lên top-1, nên tôi tự đánh giá 8/10 theo kết quả đã tổng hợp trong báo cáo nhóm.
