@@ -104,25 +104,22 @@ Các số liệu trên được tạo từ corpus hiện tại với `chunk_size
 
 | Thành viên | Chiến lược (Strategy) | Số chunks | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
 |-----------|----------|-------------|----------------------|-----------|----------|
-| Phụng | SentenceChunker (3 câu/chunk) | 212 | 7 | Câu hoàn chỉnh; đúng nguồn ở top-1 cho 4/5 câu và trong top-3 cho 5/5 câu | Q3 đúng nguồn chỉ ở hạng 2–3; Q4 trả lời sai và bị ngắt; Q5 thiếu các bước trung gian và thời gian xử lý 3–5 ngày |
-| Thịnh | HeadingChunker | 162 | 8 | Giữ ngữ cảnh heading, index nhỏ nhất (162 chunk), Hit@3 5/5, 3/5 đúng nguồn ở top-1 | Cần parse Markdown; văn bản plain text không có heading sẽ fallback về recursive |
-| Nhân | SemanticChunker | 583 | 9 | Tự động tìm điểm chuyển chủ đề, Hit@3 5/5, 5/5 đúng top-1 | Index lớn nhất (583 chunk, ~3.6x Heading), cần gọi embedding ngay trong bước chunking |
-| Mai | FixedSizeChunker (400, overlap=50) | 299 | 5* | Đơn giản, baseline reproducible, overlap giữ liên kết ngữ cảnh | Chỉ 3/5 câu có đúng nguồn trong top-3; chạy bằng mock embedder nên kết quả chỉ dùng kiểm tra pipeline, không dùng để xếp hạng chunker |
-| Lợi | RecursiveChunker (size=500) | 278 | 8 | Tận dụng cấu trúc tự nhiên, Q2/Q3/Q5 đúng top-1, 5/5 top-3 | Q1/Q4 sai top-1 do trùng lặp chủ đề giữa tài liệu (`return-refund-policy` vs `buyer-cancel-order`) |
+| Phụng | SentenceChunker (3 câu/chunk) | 212 | 7 | Hit@3 5/5; Q1, Q2, Q4 và Q5 đúng nguồn ở top-1; Q1–Q2 trả lời đúng gold answer | Q3 đúng nguồn ở hạng 2; Q4 trả lời sai/bị ngắt; Q5 thiếu bước và mốc xử lý 3–5 ngày |
+| Thịnh | HeadingChunker | 162 | 5 | Giữ ngữ cảnh heading; index nhỏ nhất; Hit@3 5/5; Q1, Q2 và Q5 đúng nguồn ở top-1 | Theo bảng kết quả cá nhân, cả 5 câu đều chỉ đúng một phần hoặc đúng nguồn không ở top-1: Q1–Q2 thiếu dữ kiện, Q3 đúng nguồn ở hạng 3, Q4 lệch danh sách, Q5 thiếu mốc 3–5 ngày |
+| Nhân | SemanticChunker | 583 | 9 | Hit@3 5/5 và đúng nguồn top-1 5/5; Q1, Q2, Q3 và Q5 có đủ bằng chứng để trả lời | Q4 top-1 đúng nguồn nhưng chunk truy xuất chưa chứa đủ 5 nhóm hàng; index lớn nhất và cần embedding trong bước chunking |
+| Mai | FixedSizeChunker (400, overlap=50) | 299 | 5 | Đơn giản, reproducible; Hit@3 5/5; Q1, Q2, Q3 và Q5 đúng nguồn ở top-1 | Cả 5 câu trả lời mới bao phủ một phần gold answer: Q1 thiếu trạng thái ngoài SPX; Q2 thiếu 6% và công thức; Q3 thiếu một số phương thức; Q4 thiếu 5 nhóm hàng; Q5 thiếu các bước khai báo/bằng chứng |
+| Lợi | RecursiveChunker (size=500) | 278 | 8 | Hit@3 5/5; Q2, Q3 và Q5 đúng nguồn ở top-1 và Agent trả lời đúng | Q1 và Q4 có đúng nguồn ở hạng 3 nên chỉ đạt 1 điểm/câu; Q4 còn lệch gold answer do hai kết quả còn lại lấy từ `seller-listing-rules` |
 
 **Chiến lược nào tốt nhất cho chủ đề này? Tại sao?**
 
-> **SemanticChunker (Nhân)** đạt điểm retrieval cao nhất trong các lượt chạy bằng embedding thật: 9/10 và đúng nguồn ở top-1 cho 5/5 câu, dù Q4 chưa bao phủ đủ hai ý của câu hỏi. Đổi lại, chiến lược này tạo 583 chunk và cần gọi embedding ngay trong bước chunking. HeadingChunker và RecursiveChunker cùng đạt 8/10; HeadingChunker chỉ tạo 162 chunk nhưng vẫn có đúng nguồn trong top-3 cho 5/5 câu. SentenceChunker của Phụng đạt 7/10 với 212 chunk: đúng nguồn top-1 ở 4/5 câu và Hit@3 5/5, nhưng Q3 đúng nguồn chỉ đứng hạng 2–3, Q4 trả lời sai/bị ngắt và Q5 chưa đủ quy trình cùng mốc xử lý 3–5 ngày. **Kết luận: HeadingChunker là lựa chọn cân bằng nhất về kích thước index và chất lượng; SemanticChunker có Hit@1 tốt nhất nhưng tốn thêm chi phí embedding khi chunking.**
-
-> \* Kết quả FixedSizeChunker của Mai dùng `MockEmbedder`, trong khi các lượt chạy còn lại dùng embedding thật. Vì điều kiện thực nghiệm khác nhau, điểm 5/10 được giữ đúng theo lượt chạy cá nhân nhưng không dùng để kết luận FixedSizeChunker kém hơn các chiến lược khác. Muốn xếp hạng công bằng cần chạy lại mọi chiến lược với cùng corpus, embedding model, `top_k` và cách chấm.
-
+> **SemanticChunker (Nhân)** đạt kết quả cao nhất: **9/10**, Hit@3 5/5 và đúng nguồn top-1 5/5; điểm bị trừ ở Q4 vì context chưa bao phủ đủ danh sách 5 nhóm sản phẩm. RecursiveChunker của Lợi đứng thứ hai với **8/10** và 278 chunk. SentenceChunker của Phụng đạt **7/10** với 212 chunk. HeadingChunker của Thịnh và FixedSizeChunker của Mai cùng đạt **5/10**: cả hai đều Hit@3 5/5 nhưng câu trả lời còn thiếu dữ kiện. **Kết luận: SemanticChunker có chất lượng cao nhất trong benchmark; RecursiveChunker là phương án cân bằng hơn giữa điểm số và kích thước index.** Không nên chọn chiến lược chỉ dựa vào cosine score top-1 hoặc số chunk.
 ---
 
 ## 3. Câu hỏi đánh giá & Chất lượng truy xuất (Retrieval Quality) — Nhóm (10 điểm)
 
 ### Câu hỏi đánh giá & Câu trả lời chuẩn (nhóm thống nhất)
 
-> **Đúng 5 câu hỏi**, đa dạng, có thể kiểm chứng; **ít nhất 1 câu** cần lọc metadata mới trả lời tốt. Đây là bộ câu hỏi chung cho mọi thành viên chạy.
+> **Đúng 5 câu hỏi**, đa dạng và có thể kiểm chứng. Q2–Q5 được chạy với metadata filter theo vai trò; Q1 không lọc. Đây là bộ câu hỏi chung cho mọi thành viên.
 
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
 |---|-------|-------------------------------|--------------------------|
@@ -138,27 +135,27 @@ Các số liệu trên được tạo từ corpus hiện tại với `chunk_size
 
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
 |---|---------|-------------------------------|-------------------------------|---------|
-| 1 | Người mua có thể hủy đơn hàng | HeadingChunker (Thịnh) — 0.792, đúng top-1 | ✅ 4/5 chiến lược có đúng nguồn trong top-3 | SemanticChunker top-1 đúng 0.739; SentenceChunker top-1 đúng 0.744; FixedSizeChunker không có đúng nguồn trong top-3 |
-| 2 | Phí xử lý giao dịch | SemanticChunker (Nhân) — 0.753, đúng nguồn ở top-1 | ✅ 4/5 chiến lược có đúng nguồn trong top-3 | SentenceChunker đưa cả ba kết quả top-3 về đúng tài liệu; SemanticChunker và RecursiveChunker cũng truy xuất được mức 6% và cách tính; FixedSizeChunker không có đúng nguồn trong top-3 |
-| 3 | Thời gian hoàn tiền | RecursiveChunker (Lợi) — 0.733, top-1 đúng | ✅ 5/5 chiến lược đều có đúng nguồn trong top-3 | Q3 có metadata filter `buyer`; SentenceChunker xếp đúng nguồn ở hạng 2 với điểm 0.7100 và trả lời đủ ý, nhưng không được điểm tối đa do sai top-1 |
-| 4 | 5 nhóm sản phẩm cấm + xử lý | SemanticChunker (Nhân) — 0.681, đúng nguồn ở top-1 nhưng coverage chưa đủ | ✅ 5/5 có đúng nguồn trong top-3; chất lượng câu trả lời khác nhau | SentenceChunker và SemanticChunker đúng nguồn ở top-1, nhưng câu trả lời của Phụng dùng thêm nội dung `listing-rules` rồi bị ngắt nên không đạt yêu cầu; Heading, FixedSize và Recursive sai top-1 do trùng chủ đề giữa hai tài liệu |
-| 5 | Gửi yêu cầu trả hàng/hoàn tiền | HeadingChunker (Thịnh) — 0.843, top-1 đúng | ✅ 5/5 chiến lược đều có đúng nguồn trong top-3 | Phụng truy xuất đúng nguồn ở cả ba vị trí (top-1: 0.8168), nhưng câu trả lời chỉ nêu hai cách chính, thiếu các bước trung gian và mốc xử lý 3–5 ngày |
+| 1 | Người mua có thể hủy đơn hàng | **SentenceChunker (Phụng)** — đúng nguồn top-1, Agent trả lời đủ các trạng thái chính | ✅ 5/5 chiến lược | HeadingChunker có score top-1 cao hơn (0,7922) nhưng câu trả lời thiếu chi tiết Chờ xác nhận/Chờ lấy hàng; vì vậy không được xem là tốt nhất theo rubric |
+| 2 | Phí xử lý giao dịch | **SemanticChunker (Nhân)** — đúng nguồn top-1; top-2 bổ sung mức phí và cách tính | ✅ 5/5 chiến lược | SentenceChunker và RecursiveChunker cũng trả lời đúng; HeadingChunker và FixedSizeChunker thiếu mức 6% hoặc công thức |
+| 3 | Thời gian hoàn tiền | **RecursiveChunker (Lợi)** — đúng nguồn top-1, Agent trả lời đúng theo phương thức | ✅ 5/5 chiến lược | SemanticChunker cũng đúng nguồn top-1 và có thêm trường hợp SPayLater; FixedSizeChunker có score cao hơn (0,7382) nhưng thiếu NAPAS, thẻ và SPayLater |
+| 4 | 5 nhóm sản phẩm cấm + xử lý | **SemanticChunker (Nhân)** — đúng nguồn top-1 nhưng coverage vẫn chưa đủ | ✅ 5/5 chiến lược | Không chiến lược nào trả lời trọn vẹn gold answer. SemanticChunker đứng đầu vì đúng nguồn ở top-1 và lấy được phần chế tài; vẫn chỉ đạt 1 điểm do thiếu đủ 5 nhóm hàng |
+| 5 | Gửi yêu cầu trả hàng/hoàn tiền | **SemanticChunker (Nhân)** — đúng nguồn top-1 (0,8331), top-1 và top-3 bao phủ hai luồng thực hiện | ✅ 5/5 chiến lược | RecursiveChunker cũng trả lời đúng và đủ với top-1 0,825; HeadingChunker có score cao hơn (0,8435) nhưng thiếu mốc xử lý 3–5 ngày; SentenceChunker và FixedSizeChunker thiếu một số bước |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
 
-> Metadata filter `customer_role` thu hẹp không gian tìm kiếm ở **Q2 và Q4** (lọc `seller`) và **Q3 và Q5** (lọc `buyer`). Ví dụ, Q2 loại các tài liệu chỉ dành cho người mua như `buyer-return-request` và `buyer-refund-time`. Filter chỉ đáng tin cậy khi metadata được gán đúng; nếu gán sai vai trò, tài liệu liên quan có thể bị loại. Lượt chạy của Mai dùng mock embedder nên không dùng điểm số đó để định lượng mức cải thiện do filter. Q1 không dùng filter nhằm kiểm tra retrieval trên toàn corpus, dù câu hỏi hướng rõ đến người mua.
+> Metadata filter `customer_role` thu hẹp không gian tìm kiếm ở **Q2 và Q4** (lọc `seller`) và **Q3 và Q5** (lọc `buyer`). Ví dụ, Q2 loại các tài liệu chỉ dành cho người mua như `buyer-return-request` và `buyer-refund-time`. Filter chỉ đáng tin cậy khi metadata được gán đúng; nếu gán sai vai trò, tài liệu liên quan có thể bị loại. Kết quả của Mai cũng cho thấy sau khi lọc, Q2, Q3 và Q5 đều đưa đúng tài liệu lên top-1; tuy nhiên benchmark hiện không có lượt đối chứng bỏ filter nên chưa thể định lượng riêng mức cải thiện. Q1 không dùng filter nhằm kiểm tra retrieval trên toàn corpus, dù câu hỏi hướng rõ đến người mua.
 
 ---
 
 ## 4. Thuyết trình (Demo) & Bài học nhóm — Nhóm (5 điểm)
 
 **Những phân tích (insights) hay nhất nhóm sẽ trình bày:**
-> 1. **Nhiều chunk hơn không tự động cho câu trả lời đầy đủ hơn:** SemanticChunker tạo 583 chunk, SentenceChunker tạo 212 và HeadingChunker tạo 162; cả ba đều đạt Hit@3 5/5, nhưng vẫn khác nhau về coverage, vị trí top-1 và khả năng tổng hợp câu trả lời. Với SentenceChunker, Q4 và Q5 cho thấy truy xuất đúng nguồn chưa bảo đảm câu trả lời đúng và đủ. Vì vậy cần cân bằng kích thước index, độ mạch lạc của chunk và độ đầy đủ của bằng chứng thay vì chỉ tối đa hóa số chunk.
+> 1. **Nhiều chunk hơn không tự động cho câu trả lời đầy đủ hơn:** SemanticChunker tạo 583 chunk, SentenceChunker tạo 212 và HeadingChunker tạo 162; cả ba đều đạt Hit@3 5/5, nhưng điểm theo rubric lần lượt là 9, 7 và 5. Chênh lệch đến từ coverage, vị trí chunk đúng và khả năng tổng hợp câu trả lời, không chỉ số lượng chunk.
 > 2. **Trùng lặp chủ đề giữa tài liệu là thách thức lớn:** Q4 khó vì `shopee-seller-listing-rules` cũng nói về "xử lý vi phạm", nên một số chiến lược xếp tài liệu này cao hơn `shopee-seller-prohibited-products`. Kết quả chịu ảnh hưởng đồng thời bởi corpus, chunking và embedding; không thể quy hoàn toàn cho một yếu tố.
-> 3. **Mock embedder không phù hợp để chấm chất lượng ngữ nghĩa:** Lượt chạy của Mai dùng vector giả ngẫu nhiên nên chỉ chứng minh pipeline hoạt động. Chênh lệch giữa lượt chạy này và các lượt dùng `text-embedding-3-small` không được dùng để kết luận chiến lược chunking nào tốt hơn.
+> 3. **Hit@3 cao chưa đồng nghĩa câu trả lời đầy đủ:** FixedSizeChunker của Mai dùng cùng `text-embedding-3-small`, đạt Hit@3 5/5 và đúng nguồn top-1 ở 4/5 câu, nhưng chỉ đạt 5/10 vì mỗi chunk 400 ký tự thường không gom đủ các mục của bảng/danh sách dài. Overlap 50 ký tự giảm mất mát ở ranh giới nhưng không giải quyết được coverage khi câu hỏi cần tổng hợp nhiều phần xa nhau.
 
 **Bài học rút ra khi so sánh trong nhóm:**
-> Cùng 10 tài liệu Shopee nhưng 5 chiến lược chunking tạo ra 162-583 chunks — khác biệt gấp 3,6 lần. Q4 có đúng nguồn ở top-1 với SentenceChunker và SemanticChunker nhưng câu trả lời vẫn có thể thiếu, sai hoặc bị ngắt; HeadingChunker, FixedSizeChunker và RecursiveChunker dễ ưu tiên nhầm tài liệu có chủ đề gần. Điều này cho thấy không có "chiến lược tốt nhất" cho mọi câu hỏi — cần đánh giá cả đúng nguồn, vị trí xếp hạng và độ đầy đủ của câu trả lời.
+> Cùng 10 tài liệu Shopee nhưng 5 chiến lược tạo ra 162–583 chunk, chênh khoảng 3,6 lần. Tất cả đều Hit@3 5/5 nhưng điểm cuối dao động 5–9/10. Q4 là trường hợp khó nhất: SentenceChunker và SemanticChunker đưa đúng nguồn lên top-1 nhưng câu trả lời vẫn thiếu/sai, còn ba chiến lược khác ưu tiên tài liệu `seller-listing-rules` có chủ đề gần. Vì vậy cần đánh giá đồng thời đúng nguồn, thứ hạng, coverage của context và độ chính xác của Agent; Hit@3 hoặc cosine score riêng lẻ chưa đủ.
 
 **Nếu làm lại, nhóm sẽ thay đổi gì trong chiến lược dữ liệu (data strategy)?**
 > 1. **Giảm trùng lặp giữa tài liệu:** `shopee-return-refund-policy` và `shopee-buyer-cancel-order` có nội dung chồng chéo về điều kiện hủy/đổi trả. Nếu có thể, nhóm sẽ merge hoặc tách rõ ranh giới giữa hai tài liệu này.
@@ -173,6 +170,6 @@ Các số liệu trên được tạo từ corpus hiện tại với `chunk_size
 |----------|-------------------|
 | Lựa chọn tài liệu (Document Set Quality) | 9 / 10 |
 | Thiết kế chiến lược (Strategy Design) | 14 / 15 |
-| Chất lượng truy xuất (Retrieval Quality) | 8 / 10 |
+| Chất lượng truy xuất (Retrieval Quality) | 9 / 10 (theo chiến lược tốt nhất: SemanticChunker) |
 | Thuyết trình (Demo) | 5 / 5 |
-| **Tổng phần nhóm** | **36 / 40** |
+| **Tổng phần nhóm** | **37 / 40** |
