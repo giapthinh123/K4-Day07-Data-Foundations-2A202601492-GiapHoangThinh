@@ -1,0 +1,412 @@
+{
+  "benchmark_file": "data\\benchmark_queries.json",
+  "benchmark_sha256": "2084c277a4969ea36bf4d3b7de56d5ed5092c02435fa65ad16e5760d78e8430f",
+  "strategy": "HeadingBasedChunker",
+  "strategy_params": {
+    "chunk_size": 1000
+  },
+  "corpus": "D:\\K4-Day07-Data-Foundations-2A202601492-GiapHoangThinh\\data\\k4_ecommerce_dang_van_nhan",
+  "embedder": "OpenRouter openai/text-embedding-3-small (768 dimensions) + SHA-256 cache",
+  "chunk_count": 162,
+  "top3_expected_source_hits": 5,
+  "query_count": 5,
+  "baseline": [
+    {
+      "doc_id": "shopee-buyer-cancel-order",
+      "strategy": "fixed_size",
+      "count": 13,
+      "avg_length": 199.30769230769232
+    },
+    {
+      "doc_id": "shopee-buyer-cancel-order",
+      "strategy": "by_sentences",
+      "count": 2,
+      "avg_length": 994.5
+    },
+    {
+      "doc_id": "shopee-buyer-cancel-order",
+      "strategy": "recursive",
+      "count": 13,
+      "avg_length": 151.3846153846154
+    },
+    {
+      "doc_id": "shopee-buyer-payment-methods",
+      "strategy": "fixed_size",
+      "count": 39,
+      "avg_length": 197.07692307692307
+    },
+    {
+      "doc_id": "shopee-buyer-payment-methods",
+      "strategy": "by_sentences",
+      "count": 8,
+      "avg_length": 722.125
+    },
+    {
+      "doc_id": "shopee-buyer-payment-methods",
+      "strategy": "recursive",
+      "count": 47,
+      "avg_length": 121.46808510638297
+    },
+    {
+      "doc_id": "shopee-buyer-refund-time",
+      "strategy": "fixed_size",
+      "count": 23,
+      "avg_length": 197.95652173913044
+    },
+    {
+      "doc_id": "shopee-buyer-refund-time",
+      "strategy": "by_sentences",
+      "count": 3,
+      "avg_length": 1148.6666666666667
+    },
+    {
+      "doc_id": "shopee-buyer-refund-time",
+      "strategy": "recursive",
+      "count": 28,
+      "avg_length": 121.82142857142857
+    }
+  ],
+  "results": [
+    {
+      "benchmark": {
+        "id": 1,
+        "query": "Người mua có thể hủy đơn hàng trên Shopee trong những trường hợp nào?",
+        "gold_answer": "Người mua chỉ có thể yêu cầu hủy đơn trong các trường hợp sau: Với đơn hàng do SPX Express giao, một số người dùng được áp dụng có thể hủy ngay khi nhấn Hủy đơn hàng nếu đơn chưa đến trạm giao hàng; người dùng không thuộc nhóm được áp dụng sẽ được xử lý như đơn do đơn vị vận chuyển khác giao. Với các đơn vị vận chuyển khác: ở trạng thái Chờ xác nhận, đơn được hủy ngay lập tức; ở trạng thái Chờ lấy hàng, đơn được hủy nếu người bán chấp nhận, còn nếu người bán từ chối thì đơn tiếp tục được xử lý; ở các trạng thái khác, người mua không thể hủy đơn.",
+        "expected_source": "shopee-buyer-cancel-order.md",
+        "expected_sections": [
+          "1. Người mua chỉ CÓ thể yêu cầu hủy đơn trong các trường hợp sau:",
+          "Khả năng hủy theo trạng thái đơn hàng"
+        ],
+        "evidence_keywords": [
+          "SPX Express",
+          "một số Người dùng nhất định",
+          "Chờ xác nhận",
+          "Chờ lấy hàng"
+        ],
+        "metadata_filter": null,
+        "difficulty": "easy",
+        "category": "buyer-policy"
+      },
+      "retrieval": [
+        {
+          "id": "shopee-buyer-cancel-order::chunk_4::4",
+          "score": 0.7922026958551793,
+          "doc_id": "shopee-buyer-cancel-order",
+          "chunk_index": 4,
+          "source": "shopee-buyer-cancel-order.md",
+          "expected_source_match": true,
+          "matched_sections": [],
+          "matched_keywords": [],
+          "preview": "# Người mua có thể hủy đơn hàng không ## Lưu ý Người mua chỉ có thể hủy đơn hàng duy nhất 1 lần cho mỗi đơn hàng Nếu yêu cầu hủy đơn hàng của bạn bị từ chối, bạn sẽ không thể ti..."
+        },
+        {
+          "id": "shopee-buyer-cancel-order::chunk_3::3",
+          "score": 0.7710671595861044,
+          "doc_id": "shopee-buyer-cancel-order",
+          "chunk_index": 3,
+          "source": "shopee-buyer-cancel-order.md",
+          "expected_source_match": true,
+          "matched_sections": [],
+          "matched_keywords": [],
+          "preview": "# Người mua có thể hủy đơn hàng không ## 3. Thực hiện thao tác hủy đơn tại mục Trò chuyện cùng Shopee Truy cập ‘Trò Chuyện Với Shopee’, phía cuối trang tại mục ‘Nhập thông tin’,..."
+        },
+        {
+          "id": "shopee-buyer-cancel-order::chunk_0::0",
+          "score": 0.7332451324345167,
+          "doc_id": "shopee-buyer-cancel-order",
+          "chunk_index": 0,
+          "source": "shopee-buyer-cancel-order.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "1. Người mua chỉ CÓ thể yêu cầu hủy đơn trong các trường hợp sau:"
+          ],
+          "matched_keywords": [
+            "SPX Express"
+          ],
+          "preview": "# Người mua có thể hủy đơn hàng không ## 1. Người mua chỉ CÓ thể yêu cầu hủy đơn trong các trường hợp sau: Đơn hàng được giao bởi SPX Express (*): có thể hủy ngay khi Người mua ..."
+        }
+      ],
+      "top3_expected_source_hit": true,
+      "agent_answer": "Người mua chỉ có thể yêu cầu hủy đơn hàng trong các trường hợp sau:\n\n1. Đơn hàng được giao bởi SPX Express: có thể hủy ngay khi người mua nhấn \"Hủy đơn hàng\" nếu đơn hàng chưa đến trạm giao hàng.\n2. Đối với đơn hàng được giao bởi các đơn vị vận chuyển khác, việc hủy đơn sẽ tùy thuộc vào trạng thái hiện tại của đơn hàng [3]."
+    },
+    {
+      "benchmark": {
+        "id": 2,
+        "query": "Phí xử lý giao dịch trên Shopee là bao nhiêu và được tính như thế nào cho người bán?",
+        "gold_answer": "Phí Xử Lý Giao Dịch do người bán chi trả được áp dụng cho mỗi đơn hàng thành công trên sàn Shopee hoặc đơn có yêu cầu Trả hàng/Hoàn tiền được Người bán/Shopee chấp nhận \"Hoàn tiền ngay\", trừ trường hợp có lý do Chưa nhận được hàng. Mức phí là 6% cho tất cả phương thức thanh toán (thẻ tín dụng/ghi nợ, COD, ATM nội địa/Internet Banking, SPayLater, ShopeePay, Apple Pay, Google Pay, chuyển khoản ngân hàng và các phương thức khác). Cách tính: Phí = (Giá sản phẩm trước Shopee trợ giá + Phí vận chuyển người mua trả - Khuyến mãi người bán đã áp dụng - Khuyến mãi từ ngân hàng, nếu có) × 6%; mức phí đã bao gồm thuế GTGT.",
+        "expected_source": "shopee-seller-responsibilities-fees.md",
+        "expected_sections": [
+          "16.3. Phí Xử Lý Giao Dịch",
+          "Phí xử lý giao dịch theo phương thức thanh toán"
+        ],
+        "evidence_keywords": [
+          "Hoàn tiền ngay",
+          "Chưa nhận được hàng",
+          "6%",
+          "Giá sản phẩm trước Shopee trợ giá"
+        ],
+        "metadata_filter": {
+          "customer_role": "seller"
+        },
+        "difficulty": "medium",
+        "category": "seller-policy"
+      },
+      "retrieval": [
+        {
+          "id": "shopee-seller-responsibilities-fees::chunk_5::122",
+          "score": 0.7436728054086905,
+          "doc_id": "shopee-seller-responsibilities-fees",
+          "chunk_index": 5,
+          "source": "shopee-seller-responsibilities-fees.md",
+          "expected_source_match": true,
+          "matched_sections": [],
+          "matched_keywords": [],
+          "preview": "# Trách nhiệm và phí của người bán ## 16. PHÍ Phí Xử Lý Giao Dịch được cấn trừ trực tiếp trên từng đơn hàng trước khi Khoản Tiền Thanh Toán từ Người Mua được ghi nhận vào Số Dư ..."
+        },
+        {
+          "id": "shopee-seller-responsibilities-fees::chunk_9::126",
+          "score": 0.7342608601421606,
+          "doc_id": "shopee-seller-responsibilities-fees",
+          "chunk_index": 9,
+          "source": "shopee-seller-responsibilities-fees.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "Phí xử lý giao dịch theo phương thức thanh toán"
+          ],
+          "matched_keywords": [],
+          "preview": "# Trách nhiệm và phí của người bán ## 16. PHÍ ### Phí xử lý giao dịch theo phương thức thanh toán Phí Dịch Vụ dành cho Người Bán là khoản phí áp dụng cho việc cung cấp các dịch ..."
+        },
+        {
+          "id": "shopee-seller-responsibilities-fees::chunk_7::124",
+          "score": 0.7144267096236065,
+          "doc_id": "shopee-seller-responsibilities-fees",
+          "chunk_index": 7,
+          "source": "shopee-seller-responsibilities-fees.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "Phí xử lý giao dịch theo phương thức thanh toán"
+          ],
+          "matched_keywords": [
+            "Hoàn tiền ngay",
+            "Chưa nhận được hàng",
+            "Giá sản phẩm trước Shopee trợ giá"
+          ],
+          "preview": "# Trách nhiệm và phí của người bán ## 16. PHÍ ### Phí xử lý giao dịch theo phương thức thanh toán Phí Cố Định là phí hoa hồng cố định áp dụng cho tất cả các giao dịch bán sản ph..."
+        }
+      ],
+      "top3_expected_source_hit": true,
+      "agent_answer": "Phí xử lý giao dịch trên Shopee được cấn trừ trực tiếp trên từng đơn hàng trước khi khoản tiền thanh toán từ người mua được ghi nhận vào số dư tài khoản Shopee của người bán. Mức phí này tùy thuộc vào phương thức thanh toán mà người mua đã chọn [1].\n\nNgoài ra, người bán còn phải chi trả phí cố định, là phí hoa hồng cố định áp dụng cho tất cả các giao dịch bán sản phẩm thành công qua sàn Shopee. Cách tính phí cố định được xác định như sau:\n\nPhí Cố Định = (Giá sản phẩm trước Shopee trợ giá - Khuyến mãi người bán đã áp dụng) x Tỷ lệ phần trăm phí cố định theo ngành hàng (đã bao gồm thuế GTGT) [3]. \n\nTỷ lệ phần trăm phí cố định theo ngành hàng sẽ do Shopee quyết định và thông báo cụ thể đến người bán [3]."
+    },
+    {
+      "benchmark": {
+        "id": 3,
+        "query": "Thời gian hoàn tiền khi người mua trả hàng trên Shopee là bao lâu tùy thuộc vào phương thức thanh toán?",
+        "gold_answer": "Thời gian hoàn tiền dự kiến tùy thuộc vào phương thức thanh toán ban đầu và nơi nhận tiền hoàn: COD/QR/Ứng dụng ngân hàng → Ví ShopeePay trong 24 giờ hoặc tài khoản ngân hàng mặc định đã liên kết trong 2 ngày làm việc; riêng thanh toán bằng Ứng dụng ngân hàng hoàn về tài khoản ngân hàng ban đầu là 7 ngày làm việc; Ví ShopeePay → Ví ShopeePay trong 24 giờ; Thẻ nội địa NAPAS → 2–5 ngày làm việc; Thẻ tín dụng/ghi nợ → 7–14 ngày làm việc; Apple Pay/Google Pay → thẻ liên kết trong 7–14 ngày làm việc; SPayLater → mục Giao dịch của SPayLater trong 24 giờ. Với đơn thanh toán kết hợp SPayLater, phần thanh toán bằng SPayLater có thể được hoàn về số dư khả dụng trong 24 giờ hoặc hóa đơn SPayLater trong 3–5 ngày làm việc.",
+        "expected_source": "shopee-buyer-refund-time.md",
+        "expected_sections": [
+          "Thời gian hoàn tiền theo phương thức",
+          "Lưu ý"
+        ],
+        "evidence_keywords": [
+          "Tài khoản ngân hàng ban đầu",
+          "7 ngày làm việc",
+          "2–5 ngày làm việc",
+          "7–14 ngày làm việc",
+          "SPayLater"
+        ],
+        "metadata_filter": {
+          "customer_role": "buyer"
+        },
+        "difficulty": "medium",
+        "category": "buyer-policy"
+      },
+      "retrieval": [
+        {
+          "id": "shopee-buyer-return-request::chunk_4::30",
+          "score": 0.7192662104994082,
+          "doc_id": "shopee-buyer-return-request",
+          "chunk_index": 4,
+          "source": "shopee-buyer-return-request.md",
+          "expected_source_match": false,
+          "matched_sections": [
+            "Lưu ý"
+          ],
+          "matched_keywords": [],
+          "preview": "# Hướng dẫn gửi yêu cầu trả hàng/hoàn tiền ## 2. Lưu ý Thời gian xử lý Yêu cầu của bạn thường được xử lý trong khoảng 3 - 5 ngày làm việc. Kết quả xử lý Shopee sẽ thông báo kết ..."
+        },
+        {
+          "id": "shopee-buyer-refund-time::chunk_3::23",
+          "score": 0.7047550972040393,
+          "doc_id": "shopee-buyer-refund-time",
+          "chunk_index": 3,
+          "source": "shopee-buyer-refund-time.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "Lưu ý"
+          ],
+          "matched_keywords": [],
+          "preview": "# Thời gian nhận tiền hoàn và cách kiểm tra tiền hoàn ## Lưu ý Trong quá trình xử lý nếu Người bán có khiếu nại, Shopee sẽ xem xét & thông báo kết quả cuối cùng đến bạn tại mục ..."
+        },
+        {
+          "id": "shopee-buyer-refund-time::chunk_1::21",
+          "score": 0.6979754856949445,
+          "doc_id": "shopee-buyer-refund-time",
+          "chunk_index": 1,
+          "source": "shopee-buyer-refund-time.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "Thời gian hoàn tiền theo phương thức"
+          ],
+          "matched_keywords": [
+            "Tài khoản ngân hàng ban đầu",
+            "7 ngày làm việc",
+            "2–5 ngày làm việc",
+            "7–14 ngày làm việc",
+            "SPayLater"
+          ],
+          "preview": "# Thời gian nhận tiền hoàn và cách kiểm tra tiền hoàn ## Thời gian hoàn tiền theo phương thức | Phương thức thanh toán ban đầu | Nơi nhận tiền hoàn | Thời gian hoàn tiền dự kiến..."
+        }
+      ],
+      "top3_expected_source_hit": true,
+      "agent_answer": "Thời gian hoàn tiền khi người mua trả hàng trên Shopee tùy thuộc vào phương thức thanh toán như sau:\n\n1. **Thanh toán khi nhận hàng / QR / Ứng dụng ngân hàng**: \n   - Về Ví ShopeePay: 24 giờ (nếu Ví ShopeePay hoạt động bình thường).\n   - Về Tài khoản ngân hàng mặc định đã liên kết: 2 ngày làm việc (tùy ngân hàng).\n\n2. **Ứng dụng ngân hàng**: \n   - Về Tài khoản ngân hàng ban đầu: 7 ngày làm việc.\n\n3. **Ví ShopeePay**: \n   - Về Ví ShopeePay: 24 giờ (nếu Ví ShopeePay hoạt động bình thường).\n\n4. **Thẻ nội địa NAPAS**: \n   - Về Thẻ nội địa NAPAS: 2–5 ngày làm việc (tùy ngân hàng).\n\n5. **Thẻ tín dụng / ghi nợ**: \n   - Về Thẻ tín dụng / ghi nợ ban đầu: 7–14 ngày làm việc (tùy ngân hàng).\n\n6. **Apple Pay**: \n   - Về Thẻ tín dụng / ghi nợ liên kết: 7–14 ngày làm việc (tùy ngân hàng).\n\n7. **Google Pay**: \n   - Về Thẻ tín dụng / ghi nợ liên kết: 7–14 ngày làm việc (tùy ngân hàng).\n\n8. **SPayLater**: \n   - Về Mục Giao dịch của SPayLater: 24 giờ [3]."
+    },
+    {
+      "benchmark": {
+        "id": 4,
+        "query": "Kể tên 5 nhóm sản phẩm bị cấm bán tiêu biểu trên Shopee và cho biết người bán có thể bị xử lý như thế nào khi vi phạm?",
+        "gold_answer": "Năm nhóm sản phẩm bị cấm tiêu biểu gồm: hàng vi phạm bản quyền; thiết bị, trang phục quân đội/lực lượng thi hành pháp luật và chính phủ; tài liệu phản động hoặc thông tin xâm phạm an ninh quốc gia; dịch vụ bất hợp pháp; súng, vũ khí và sản phẩm có hình dạng giống vũ khí. Khi vi phạm, sản phẩm có thể bị xóa; tài khoản có thể bị giới hạn quyền, đình chỉ hoạt động hoặc xóa; số dư tài khoản Shopee có thể bị cấn trừ và quyền rút tiền có thể bị phong tỏa; người bán còn có thể chịu các chế tài khác theo chính sách Shopee hoặc pháp luật.",
+        "expected_source": "shopee-seller-prohibited-products.md",
+        "expected_sections": [
+          "3. HÀNH VI VI PHẠM VÀ BIỆN PHÁP XỬ LÝ",
+          "4. DANH SÁCH SẢN PHẨM BỊ CẤM/HẠN CHẾ MUA BÁN TRÊN SHOPEE"
+        ],
+        "evidence_keywords": [
+          "Sản phẩm bị xóa",
+          "Tài khoản bị giới hạn quyền",
+          "Hàng vi phạm bản quyền",
+          "Súng, vũ khí"
+        ],
+        "metadata_filter": {
+          "customer_role": "seller"
+        },
+        "difficulty": "hard",
+        "category": "seller-policy"
+      },
+      "retrieval": [
+        {
+          "id": "shopee-seller-listing-rules::chunk_31::98",
+          "score": 0.7032869052342042,
+          "doc_id": "shopee-seller-listing-rules",
+          "chunk_index": 31,
+          "source": "shopee-seller-listing-rules.md",
+          "expected_source_match": false,
+          "matched_sections": [],
+          "matched_keywords": [],
+          "preview": "# Quy định đăng bán sản phẩm ## E. XỬ LÝ VI PHẠM Người Bán vi phạm một trong các quy định trên trong quá trình đăng bán sản phẩm, tùy theo mức độ vi phạm, Shopee sẽ tiến hành mộ..."
+        },
+        {
+          "id": "shopee-seller-prohibited-products::chunk_2::102",
+          "score": 0.6947301037187379,
+          "doc_id": "shopee-seller-prohibited-products",
+          "chunk_index": 2,
+          "source": "shopee-seller-prohibited-products.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "3. HÀNH VI VI PHẠM VÀ BIỆN PHÁP XỬ LÝ"
+          ],
+          "matched_keywords": [
+            "Sản phẩm bị xóa",
+            "Tài khoản bị giới hạn quyền"
+          ],
+          "preview": "# Chính sách cấm/hạn chế sản phẩm ## 3. HÀNH VI VI PHẠM VÀ BIỆN PHÁP XỬ LÝ Việc vi phạm Chính Sách Cấm/Hạn Chế Sản Phẩm có thể dẫn đến việc Người Bán phải chịu một loạt các chế ..."
+        },
+        {
+          "id": "shopee-seller-prohibited-products::chunk_15::115",
+          "score": 0.6686040189206331,
+          "doc_id": "shopee-seller-prohibited-products",
+          "chunk_index": 15,
+          "source": "shopee-seller-prohibited-products.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "4. DANH SÁCH SẢN PHẨM BỊ CẤM/HẠN CHẾ MUA BÁN TRÊN SHOPEE"
+          ],
+          "matched_keywords": [],
+          "preview": "# Chính sách cấm/hạn chế sản phẩm ## 4. DANH SÁCH SẢN PHẨM BỊ CẤM/HẠN CHẾ MUA BÁN TRÊN SHOPEE - Bị bất kỳ cơ quan có thẩm quyền nào đánh giá là có nguy cơ về sức khỏe hoặc không..."
+        }
+      ],
+      "top3_expected_source_hit": true,
+      "agent_answer": "Năm nhóm sản phẩm bị cấm bán tiêu biểu trên Shopee bao gồm:\n\n1. Sản phẩm bị đánh giá là có nguy cơ về sức khỏe hoặc không đạt các chỉ tiêu về an toàn.\n2. Các loại mã giảm giá do Shopee cung cấp và các sản phẩm có logo Shopee.\n3. Sản phẩm chứa yếu tố tôn giáo, tâm linh, mê tín dị đoan (ví dụ: bùa ngải, nhang cúng kumanthong).\n4. Sản phẩm kỹ thuật số (ví dụ: thẻ game, tài khoản game/ứng dụng).\n5. Thiết bị không đạt quy chuẩn kỹ thuật quốc gia (ví dụ: điện thoại di động cơ bản thuần 2G/3G không tích hợp chức năng 4G hoặc 5G) [3].\n\nKhi vi phạm các quy định này, người bán có thể bị xử lý bằng các biện pháp như:\n\n- Sản phẩm bị xóa.\n- Tài khoản bị giới hạn quyền hoặc đình chỉ hoạt động.\n- Cấn trừ số dư tài khoản Shopee và phong tỏa quyền rút tiền từ số dư tài khoản.\n- Các chế tài khác theo chính sách của Shopee hoặc theo quy định của pháp luật, bao gồm phạt hành chính, xử lý hình sự và/hoặc bồi thường thiệt hại [2]."
+    },
+    {
+      "benchmark": {
+        "id": 5,
+        "query": "Người mua cần làm gì khi muốn gửi yêu cầu trả hàng/hoàn tiền trên Shopee?",
+        "gold_answer": "Người mua có thể gửi yêu cầu theo 2 cách: Cách 1 - Tại trang đơn hàng: Vào Tôi → chọn thẻ Chờ giao hàng/Đã giao → chọn đơn hàng → bấm Trả hàng/Hoàn tiền → chọn tình huống đang gặp → chọn sản phẩm cần khiếu nại (không cần chọn nếu đơn chỉ có 1 sản phẩm) → chọn lý do khiếu nại → nếu khiếu nại với lý do Thiếu hàng thì chọn phương án trả hàng/hoàn tiền → điền mô tả, bằng chứng và email liên hệ → Gửi yêu cầu. Cách 2 - Tại mục Trò Chuyện Với Shopee: Vào Tôi → Trò Chuyện Với Shopee → chọn Khiếu nại trả hàng hoàn tiền → chọn đơn hàng → xác nhận Đã nhận hoặc Chưa nhận hàng → chọn lý do → tải lên bằng chứng → Gửi yêu cầu. Yêu cầu thường được xử lý trong khoảng 3 - 5 ngày làm việc.",
+        "expected_source": "shopee-buyer-return-request.md",
+        "expected_sections": [
+          "Cách 1: Gửi yêu cầu trực tiếp tại trang đơn hàng",
+          "Cách 2: Gửi yêu cầu tại mục Trò Chuyện Với Shopee",
+          "2. Lưu ý"
+        ],
+        "evidence_keywords": [
+          "Trả hàng/Hoàn tiền",
+          "Khiếu nại trả hàng hoàn tiền",
+          "3 - 5 ngày làm việc"
+        ],
+        "metadata_filter": {
+          "customer_role": "buyer"
+        },
+        "difficulty": "medium",
+        "category": "buyer-policy"
+      },
+      "retrieval": [
+        {
+          "id": "shopee-buyer-return-request::chunk_3::29",
+          "score": 0.8434760051972765,
+          "doc_id": "shopee-buyer-return-request",
+          "chunk_index": 3,
+          "source": "shopee-buyer-return-request.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "Cách 2: Gửi yêu cầu tại mục Trò Chuyện Với Shopee"
+          ],
+          "matched_keywords": [
+            "Trả hàng/Hoàn tiền",
+            "Khiếu nại trả hàng hoàn tiền"
+          ],
+          "preview": "# Hướng dẫn gửi yêu cầu trả hàng/hoàn tiền ## Cách 2: Gửi yêu cầu tại mục Trò Chuyện Với Shopee - **Bước 1:** Tại trang chủ Shopee, vào mục Tôi > chọn Trò Chuyện Với Shopee. - *..."
+        },
+        {
+          "id": "shopee-buyer-return-request::chunk_0::26",
+          "score": 0.8390912631205176,
+          "doc_id": "shopee-buyer-return-request",
+          "chunk_index": 0,
+          "source": "shopee-buyer-return-request.md",
+          "expected_source_match": true,
+          "matched_sections": [],
+          "matched_keywords": [
+            "Trả hàng/Hoàn tiền"
+          ],
+          "preview": "# Hướng dẫn gửi yêu cầu trả hàng/hoàn tiền Khi cần yêu cầu trả hàng hoặc hoàn tiền trên Shopee, bạn có thể thực hiện theo một trong hai cách sau."
+        },
+        {
+          "id": "shopee-buyer-return-request::chunk_1::27",
+          "score": 0.794977484439488,
+          "doc_id": "shopee-buyer-return-request",
+          "chunk_index": 1,
+          "source": "shopee-buyer-return-request.md",
+          "expected_source_match": true,
+          "matched_sections": [
+            "Cách 1: Gửi yêu cầu trực tiếp tại trang đơn hàng"
+          ],
+          "matched_keywords": [
+            "Trả hàng/Hoàn tiền"
+          ],
+          "preview": "# Hướng dẫn gửi yêu cầu trả hàng/hoàn tiền ## Cách 1: Gửi yêu cầu trực tiếp tại trang đơn hàng - **Bước 1:** Mở ứng dụng Shopee, vào mục Tôi > chọn thẻ Chờ giao hàng/Đã giao - *..."
+        }
+      ],
+      "top3_expected_source_hit": true,
+      "agent_answer": "Người mua có thể gửi yêu cầu trả hàng/hoàn tiền trên Shopee theo hai cách:\n\n**Cách 1: Gửi yêu cầu trực tiếp tại trang đơn hàng**\n1. Mở ứng dụng Shopee, vào mục Tôi > chọn thẻ Chờ giao hàng/Đã giao.\n2. Tại đơn hàng cần xử lý, bấm Trả hàng/Hoàn tiền.\n3. Chọn tình huống gặp phải (đã nhận hàng nhưng có vấn đề hoặc chưa nhận hàng).\n4. Chọn sản phẩm cần khiếu nại (nếu đơn hàng có nhiều sản phẩm).\n5. Chọn lý do khiếu nại.\n6. Chọn phương án trả hàng/hoàn tiền (nếu có).\n7. Điền thông tin cần thiết vào biểu mẫu, bao gồm mô tả tình trạng hàng hóa [3].\n\n**Cách 2: Gửi yêu cầu tại mục Trò Chuyện Với Shopee**\n1. Tại trang chủ Shopee, vào mục Tôi > chọn Trò Chuyện Với Shopee.\n2. Chọn Khiếu nại trả hàng hoàn tiền.\n3. Chọn đơn hàng cần gửi yêu cầu.\n4. Xác nhận đã nhận hoặc chưa nhận hàng, chọn lý do gửi yêu cầu, tải lên bằng chứng (ảnh/video), và nhấn Gửi yêu cầu [1]."
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+# OpenRouter uses an OpenAI-compatible embeddings and chat API.
+openai>=1.0.0,<3.0.0

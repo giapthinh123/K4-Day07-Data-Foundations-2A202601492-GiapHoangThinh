@@ -1,3 +1,11 @@
 doc_id,file_path,title,source_url,retrieved_at,document_version,license_or_permission
-k4-returns-policy,data/k4_ecommerce/returns-policy.md,Chính sách đổi trả,https://example.com/chinh-sach/doi-tra,2026-08-02,2026.1,example-template-replace-me
-k4-seller-listing,data/k4_ecommerce/seller-listing.md,Quy định đăng bán,https://example.com/nguoi-ban/dang-ban,2026-08-02,2026.1,example-template-replace-me
+shopee-buyer-cancel-order,data/k4_ecommerce/shopee-buyer-cancel-order.md,Người mua có thể hủy đơn hàng không,https://help.shopee.vn/portal/4/article/79182,2026-08-03,not-stated,public-page-review-required
+shopee-buyer-payment-methods,data/k4_ecommerce/shopee-buyer-payment-methods.md,Các phương thức thanh toán trên Shopee,https://help.shopee.vn/portal/4/article/79198,2026-08-03,not-stated,public-page-review-required
+shopee-buyer-refund-time,data/k4_ecommerce/shopee-buyer-refund-time.md,Thời gian nhận tiền hoàn và cách kiểm tra tiền hoàn,https://help.shopee.vn/portal/4/article/189473,2026-08-03,not-stated,public-page-review-required
+shopee-buyer-return-request,data/k4_ecommerce/shopee-buyer-return-request.md,Hướng dẫn gửi yêu cầu trả hàng/hoàn tiền,https://help.shopee.vn/portal/4/article/79233,2026-08-03,not-stated,public-page-review-required
+shopee-return-refund-policy,data/k4_ecommerce/shopee-return-refund-policy.md,Chính sách trả hàng và hoàn tiền,https://help.shopee.vn/portal/4/article/77251,2026-08-03,2026-03-11,public-page-review-required
+shopee-seller-antifraud,data/k4_ecommerce/shopee-seller-antifraud.md,CHÍNH SÁCH CHỐNG HÀNH VI GIAN LẬN TRÊN SÀN SHOPEE VÀ CÁC BIỆN PHÁP XỬ LÝ ĐỐI VỚI NGƯỜI BÁN VI PHẠM,https://help.shopee.vn/portal/4/article/140097,2026-08-03,2023-12-28,public-page-review-required
+shopee-seller-listing-rules,data/k4_ecommerce/shopee-seller-listing-rules.md,Quy định đăng bán sản phẩm,https://help.shopee.vn/portal/4/article/77246,2026-08-03,2024-08-14,public-page-review-required
+shopee-seller-prohibited-products,data/k4_ecommerce/shopee-seller-prohibited-products.md,Chính sách cấm/hạn chế sản phẩm,https://help.shopee.vn/portal/4/article/77247,2026-08-03,2025-04-28,public-page-review-required
+shopee-seller-responsibilities-fees,data/k4_ecommerce/shopee-seller-responsibilities-fees.md,Trách nhiệm và phí của người bán,https://help.shopee.vn/portal/4/article/77243,2026-08-03,2026-05-01,public-page-review-required
+shopee-shipping-policy,data/k4_ecommerce/shopee-shipping-policy.md,Chính sách vận chuyển Shopee,https://help.shopee.vn/portal/4/article/77250,2026-08-03,2026-03-20,public-page-review-required

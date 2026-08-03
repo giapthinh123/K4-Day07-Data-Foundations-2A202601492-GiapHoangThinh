@@ -8,14 +8,24 @@ from dotenv import load_dotenv
 
 from ingest import build_knowledge_base
 from src.agent import KnowledgeBaseAgent
+from src.chunking import HeadingBasedChunker
 from src.embeddings import (
     EMBEDDING_PROVIDER_ENV,
+    GEMINI_EMBEDDING_DIMENSIONS,
+    GEMINI_EMBEDDING_MODEL,
     LOCAL_EMBEDDING_MODEL,
     OPENAI_EMBEDDING_MODEL,
+    OPENROUTER_EMBEDDING_DIMENSIONS,
+    OPENROUTER_EMBEDDING_MODEL,
+    GeminiEmbedder,
     LocalEmbedder,
     OpenAIEmbedder,
+    OpenRouterEmbedder,
     _mock_embed,
 )
+from src.llms import OPENROUTER_CHAT_MODEL, OpenRouterLLM
+from src.store import EmbeddingStore
+from src.supabase_store import SupabaseEmbeddingStore
 
 # Thư mục dữ liệu mặc định cho demo = bộ khởi động cố định của lớp K4.
 # Đổi bằng biến môi trường: LAB_DATA_DIR=data/<thu-muc-cua-nhom> python3 main.py
@@ -23,7 +33,7 @@ DEFAULT_DATA_DIR = "data/k4_ecommerce"
 
 
 def _select_embedder():
-    """Chọn backend nhúng theo biến môi trường EMBEDDING_PROVIDER (mock | local | openai)."""
+    """Chọn backend: mock | local | openai | gemini | openrouter."""
     load_dotenv(override=False)
     provider = os.getenv(EMBEDDING_PROVIDER_ENV, "mock").strip().lower()
     if provider == "local":
@@ -38,6 +48,35 @@ def _select_embedder():
         except Exception:
             print("OpenAI embedder không sẵn sàng; tạm dùng mock.")
             return _mock_embed
+    if provider == "openrouter":
+        try:
+            dimensions = int(
+                os.getenv(
+                    "OPENROUTER_EMBEDDING_DIMENSIONS",
+                    str(OPENROUTER_EMBEDDING_DIMENSIONS),
+                )
+            )
+            return OpenRouterEmbedder(
+                model_name=os.getenv(
+                    "OPENROUTER_EMBEDDING_MODEL", OPENROUTER_EMBEDDING_MODEL
+                ),
+                dimensions=dimensions,
+            )
+        except Exception as exc:
+            print(f"OpenRouter embedder không sẵn sàng ({exc}); tạm dùng mock.")
+            return _mock_embed
+    if provider == "gemini":
+        try:
+            dimensions = int(
+                os.getenv("GEMINI_EMBEDDING_DIMENSIONS", str(GEMINI_EMBEDDING_DIMENSIONS))
+            )
+            return GeminiEmbedder(
+                model_name=os.getenv("GEMINI_EMBEDDING_MODEL", GEMINI_EMBEDDING_MODEL),
+                output_dimensionality=dimensions,
+            )
+        except Exception as exc:
+            print(f"Gemini embedder không sẵn sàng ({exc}); tạm dùng mock.")
+            return _mock_embed
     return _mock_embed
 
 
@@ -45,6 +84,15 @@ def demo_llm(prompt: str) -> str:
     """LLM giả lập đơn giản để thử RAG thủ công."""
     preview = prompt[:400].replace("\n", " ")
     return f"[DEMO LLM] Generated answer from prompt preview: {preview}..."
+
+
+def _select_llm():
+    provider = os.getenv("LLM_PROVIDER", "demo").strip().lower()
+    if provider == "openrouter":
+        return OpenRouterLLM(
+            model_name=os.getenv("OPENROUTER_CHAT_MODEL", OPENROUTER_CHAT_MODEL)
+        )
+    return demo_llm
 
 
 def run_manual_demo(question: str | None = None, data_dir: str | None = None) -> int:
@@ -68,8 +116,23 @@ def run_manual_demo(question: str | None = None, data_dir: str | None = None) ->
             "Ở Giai đoạn 2, đặt EMBEDDING_PROVIDER=local để so sánh retrieval có ý nghĩa."
         )
 
-    # Pipeline cung cấp sẵn: parse front matter -> chunk -> gắn metadata -> nạp store.
-    store = build_knowledge_base(data_dir, embedding_fn=embedder)
+    # Chính sách K4 là Markdown có cấu trúc nên demo dùng heading-based chunking.
+    chunker = HeadingBasedChunker(
+        chunk_size=int(os.getenv("HEADING_CHUNK_SIZE", "1000")),
+    )
+    print(f"Chunker: HeadingBasedChunker (chunk_size={chunker.chunk_size})")
+
+    store_provider = os.getenv("VECTOR_STORE_PROVIDER", "memory").strip().lower()
+    store_class = SupabaseEmbeddingStore if store_provider == "supabase" else EmbeddingStore
+    print(f"Vector store: {store_provider}")
+
+    # Pipeline: parse front matter -> heading chunks -> embedding -> vector store.
+    store = build_knowledge_base(
+        data_dir,
+        embedding_fn=embedder,
+        chunker=chunker,
+        store_class=store_class,
+    )
     print(f"Đã nạp {store.get_collection_size()} chunk vào EmbeddingStore")
 
     print("\n=== Tìm kiếm (EmbeddingStore.search) ===")
@@ -79,7 +142,9 @@ def run_manual_demo(question: str | None = None, data_dir: str | None = None) ->
         print(f"   {result['content'][:120].replace(chr(10), ' ')}...")
 
     print("\n=== KnowledgeBaseAgent ===")
-    agent = KnowledgeBaseAgent(store=store, llm_fn=demo_llm)
+    llm = _select_llm()
+    print(f"LLM: {getattr(llm, '_backend_name', 'demo')}")
+    agent = KnowledgeBaseAgent(store=store, llm_fn=llm)
     print(agent.answer(query, top_k=3))
     return 0
 

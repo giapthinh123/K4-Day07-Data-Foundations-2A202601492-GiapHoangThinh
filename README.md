@@ -89,7 +89,7 @@ export OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ### Quy tắc dự phòng (fallback)
 
 - Nếu không chọn gì, lab mặc định dùng `_mock_embed`
-- Nếu chọn `local` hoặc `openai` nhưng thiết lập bị thiếu, mã nguồn sẽ tự động chuyển về dùng `_mock_embed`
+- Nếu chọn `local`, `openai` hoặc `gemini` nhưng thiết lập bị thiếu, mã nguồn sẽ tự động chuyển về dùng `_mock_embed`
 - Có thể cấu hình qua file `.env` mà không cần chạy lệnh `source .env`
 - File kịch bản `main.py` chạy từ đầu đến cuối và nhập (import) các API công khai từ gói `src`
 
@@ -123,6 +123,78 @@ PY
 ```
 
 > Lưu ý: `OpenAIEmbedder` cần biến môi trường `OPENAI_API_KEY` hợp lệ hoặc có trong file `.env`.
+
+### 4) Tùy chọn: Trình nhúng Gemini (Gemini embedder)
+
+```bash
+pip install -r requirements-gemini.txt
+```
+
+Tạo file `.env` ở thư mục gốc dự án:
+
+```dotenv
+EMBEDDING_PROVIDER=gemini
+GEMINI_API_KEY=your-key-here
+GEMINI_EMBEDDING_MODEL=gemini-embedding-2
+GEMINI_EMBEDDING_DIMENSIONS=768
+```
+
+Kiểm tra nhanh:
+
+```bash
+python -c "from dotenv import load_dotenv; load_dotenv(); from src import GeminiEmbedder; e = GeminiEmbedder(); print(e._backend_name, len(e('embedding smoke test')))"
+```
+
+`gemini-embedding-2` là model Gemini Embedding ổn định hiện hành. Backend mặc định
+dùng vector 768 chiều và chuẩn hóa vector trước khi đưa vào `EmbeddingStore`.
+
+### 5) OpenRouter: embedding và GPT-4o mini
+
+`gpt-4o-mini` là model sinh text, không phải embedding model. Khi dùng OpenRouter,
+dự án cấu hình hai model đúng chức năng:
+
+- Embedding: `openai/text-embedding-3-small`, rút gọn còn 768 chiều.
+- Trả lời RAG: `openai/gpt-4o-mini`.
+
+```bash
+pip install -r requirements-openrouter.txt
+```
+
+```dotenv
+EMBEDDING_PROVIDER=openrouter
+OPENROUTER_API_KEY=your-key-here
+OPENROUTER_EMBEDDING_MODEL=openai/text-embedding-3-small
+OPENROUTER_EMBEDDING_DIMENSIONS=768
+LLM_PROVIDER=openrouter
+OPENROUTER_CHAT_MODEL=openai/gpt-4o-mini
+```
+
+Kiểm tra embedding:
+
+```bash
+python -c "from dotenv import load_dotenv; load_dotenv(); from src import OpenRouterEmbedder; e=OpenRouterEmbedder(); print(e._backend_name, len(e('embedding smoke test')))"
+```
+
+### Lưu embedding trong Supabase
+
+Dự án hỗ trợ lưu bền vững bằng Supabase PostgreSQL + pgvector thông qua
+`SupabaseEmbeddingStore`. Xem hướng dẫn đầy đủ tại
+[`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md) và chạy schema trong
+[`supabase/schema.sql`](supabase/schema.sql) trước khi chạy `main.py`.
+
+### Chạy benchmark cố định
+
+`bench.py` luôn đọc đúng 5 query trong `data/benchmark_queries.json`, chạy top-3,
+áp dụng metadata filter được khai báo trong từng query và cache embedding theo
+SHA-256 trong `.embedding_cache/`.
+
+```bash
+python bench.py
+```
+
+Strategy hiện tại là `HeadingBasedChunker(chunk_size=1000)`. Thành viên khác chỉ
+đổi dòng khởi tạo `chunker` trong `bench.py`; corpus, query, embedder và top-k giữ
+nguyên. Kết quả được lưu tại `report/benchmark_heading_based_chunker.json`.
 
 ---
 
@@ -174,6 +246,27 @@ PY
 ### Cần lập trình (CẦN LÀM)
 - `SentenceChunker` — chia nhỏ theo ranh giới câu
 - `RecursiveChunker` — thử nghiệm từng dấu phân cách theo thứ tự
+- `HeadingBasedChunker` — chia Markdown theo tiêu đề và lặp lại đường dẫn tiêu đề trong từng chunk
+
+Demo trong `main.py` dùng `HeadingBasedChunker` mặc định. Có thể đặt giới hạn
+kích thước section trong `.env`:
+
+```dotenv
+HEADING_CHUNK_SIZE=1000
+```
+
+Hoặc truyền trực tiếp vào pipeline:
+
+```python
+from ingest import build_knowledge_base
+from src import GeminiEmbedder, HeadingBasedChunker
+
+store = build_knowledge_base(
+    "data/ecommerce_crawled",
+    embedding_fn=GeminiEmbedder(),
+    chunker=HeadingBasedChunker(chunk_size=1000),
+)
+```
 - `compute_similarity` — tính độ tương tự cosine
 - `ChunkingStrategyComparator` — so sánh 3 chiến lược
 - `EmbeddingStore` — lớp bao bọc (wrapper) cho kho lưu trữ vector (gồm 5 phương thức)

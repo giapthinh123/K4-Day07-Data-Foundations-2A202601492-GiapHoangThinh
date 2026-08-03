@@ -116,7 +116,8 @@ def build_knowledge_base(
     embedding_fn: Callable[[str], list[float]],
     chunker=None,
     collection_name: str = "lab7_kb",
-) -> EmbeddingStore:
+    store_class=EmbeddingStore,
+):
     """Đầu-cuối: file -> tài liệu đã parse -> chunk (kèm metadata) -> nạp vào store.
 
     Truyền CHUNKER bạn chọn (mặc định `FixedSizeChunker`). Cần `EmbeddingStore`
@@ -127,7 +128,7 @@ def build_knowledge_base(
     for doc in load_documents(data_dir):
         chunk_docs.extend(chunk_document(doc, chunker))
 
-    store = EmbeddingStore(collection_name=collection_name, embedding_fn=embedding_fn)
+    store = store_class(collection_name=collection_name, embedding_fn=embedding_fn)
     store.add_documents(chunk_docs)
     return store
 
